@@ -77,7 +77,7 @@ MBArray * mbarray_Create_Mmap(BTYPE num_bits, const char * file, const char * he
     array->fd = open(file, oflag, perms);
 
     if (array->fd < 0) {
-        errno = EINVAL;
+        //errno = EINVAL;
         mbarray_Destroy(array);
         return NULL;
     }
@@ -85,7 +85,7 @@ MBArray * mbarray_Create_Mmap(BTYPE num_bits, const char * file, const char * he
     fheaderlen = mbarray_HeaderLen(array);
     errno = 0;
     if (fheaderlen >= 0 && !(oflag & O_CREAT) && fheaderlen != header_len) {
-        errno = EINVAL;
+        //errno = EINVAL;
         mbarray_Destroy(array);
         return NULL;
     }
@@ -116,20 +116,20 @@ MBArray * mbarray_Create_Mmap(BTYPE num_bits, const char * file, const char * he
         return NULL;
     }
     else if (filesize && !_valid_magic(array->fd)) {
-        errno = EINVAL;
+        //errno = EINVAL;
         mbarray_Destroy(array);
         return NULL;
     }
     else if (filesize && filesize < (array->bytes + array->preamblebytes - 1)) {
-        errno = EINVAL;
+        //errno = EINVAL;
         mbarray_Destroy(array);
         return NULL;
     }
     else if (!filesize) {
         if (!(oflag & O_CREAT) || (!num_bits) || _initialize_file(array->fd, array->bytes + array->preamblebytes - 1, num_bits, header, header_len)) {
-            if (!errno) {
-                errno = ENOENT;
-            }
+            //if (!errno) {
+                //errno = ENOENT;
+            //}
             mbarray_Destroy(array);
             return NULL;
         }
@@ -142,7 +142,7 @@ MBArray * mbarray_Create_Mmap(BTYPE num_bits, const char * file, const char * he
         }
         else if (_get_num_bits(array->fd) != num_bits) {
             mbarray_Destroy(array);
-            errno = EINVAL;
+            //errno = EINVAL;
             return NULL;
         }
     }
@@ -227,7 +227,7 @@ char * mbarray_Header(char * dest, MBArray * array, int maxlen)
 int mbarray_Sync(MBArray * array)
 {
     if (!array || !array->vector) {
-        errno = EINVAL;
+        //errno = EINVAL;
         return 1;
     }
     if (msync(array->vector, _mmap_size(array), MS_ASYNC)) {
@@ -240,7 +240,7 @@ int mbarray_Sync(MBArray * array)
 int mbarray_ClearAll(MBArray * array)
 {
     if (!array || !array->vector) {
-        errno = EINVAL;
+        //errno = EINVAL;
         return 1;
     }
     memset((void *)(array->vector + array->preamblesize), 0, sizeof(DTYPE) * array->size);
@@ -333,13 +333,13 @@ MBArray * mbarray_Copy_Template(MBArray * src, char * filename, int perms)
     }
 
     if (!strcmp(filename, src->filename)) {
-        errno = EINVAL;
+        //errno = EINVAL;
         return NULL;
     }
 
     header = (char *)malloc(header_len + 1);
     if (header == NULL) {
-        errno = ENOMEM;
+        //errno = ENOMEM;
         return NULL;
     }
 

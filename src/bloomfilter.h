@@ -69,6 +69,7 @@ static inline int bloomfilter_Add(BloomFilter * bf, Key * key)
     if (!result && bf->count_correct) {
         bf->elem_count ++;
     }
+    fprintf(stderr, "bloomfilter_Add ret=%d\n", result);
     return result;
 }
 __attribute__((always_inline))

@@ -183,12 +183,12 @@ uint32_t _hash_char(uint32_t hash_seed, Key * key) {
 }
 
 
-#if 0
+#if 1
 int main(int argc, char **argv)
 {
     int hash_seeds[5] = { 4234 , 2123, 4434, 444, 12123};
-    BloomFilter *bf = bloomfilter_Create(100000, 0.4,
-                                         "/tmp/bf2", 10000000, O_RDWR, 0,
+    BloomFilter *bf = bloomfilter_Create_Mmap(100000, 0.4,
+                                         "/tmp/bf2", 10000000, O_RDWR|O_CREAT, 0644,
                                         hash_seeds, 5);
 
     Key key;
@@ -204,12 +204,15 @@ int main(int argc, char **argv)
         line[strlen(line) - 1] = '\0';
         key.nhash = strlen(line);
 
-        /*if (bloomfilter_Add(bf, &key)) {
-            goto error;
-            }*/
-        if (bloomfilter_Test(bf, &key)) {
+        if (bloomfilter_Add(bf, &key)) {
+            //goto error;
             printf("Found '%s'!\n", line);
-        }
+            continue;
+            
+            }
+        //if (bloomfilter_Test(bf, &key)) {
+        //    printf("Found '%s'!\n", line);
+        //}
     }
     bloomfilter_Destroy(bf);
     return 0;
